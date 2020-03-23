@@ -41,3 +41,43 @@ SEQUEL nutzt ein English-Keyword Format, SQUARE hingegen präzise mathematische 
 #### Finden Sie einige Unterschiede zwischen dem ursprünglichen SEQUEL und dem heutigen SQL?
 Integer values in '' -> s.255
 Union and Intersection mit keyword and/or möglich -> s.257
+## 3. SQL Workbench
+#### 1.1
+`SELECT * FROM movies`
+#### 1.2
+`SELECT username from user`
+#### 1.3
+22
+`select count(*) from category`
+#### 1.4
+7292
+`select count(distinct(lastname)) from crew`
+#### 1.5
+yes
+`select title from movies where title = 'a beautiful mind'`
+#### 1.6
+`select * from award order by name desc`
+#### 1.7
+`select title from movies where budget > 280000000`
+#### 1.8
+yes
+`select username from user where username like '%norris%'`
+#### 1.9
+`select name from keywords where name like 'can%'`
+#### 1.10
+`select username, location from user where location like 'Ba__'`
+#### 1.11
+what should be problematic?
+`select username, age from user where watched > 800 and age < 12`
+#### 1.12
+i dont get it..
+#### 1.13
+???
+#### 1.14
+1691
+`select title, imdbRating from movies where imdbRating = 7.0 or imdbRating = 8.0`
+#### 1.15
+234
+`select title, imdbRating, metascore from movies where metascore > 80 or imdbRating > 8.0 and year > 2012`
+#### 1.15
+
