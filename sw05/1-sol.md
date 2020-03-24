@@ -67,12 +67,13 @@ yes
 #### 1.10
 `select username, location from user where location like 'Ba__'`
 #### 1.11
-what should be problematic?
+age is always 0
 `select username, age from user where watched > 800 and age < 12`
 #### 1.12
-i dont get it..
+`select username, age from user where watched > 800 and age between 1 and 12`
 #### 1.13
-???
+can be solved with the keyword between as used in ex 1.12.
+there are 2 user exists: `select count(username) from user where watched > 800 and age between 1 and 12`
 #### 1.14
 1691
 `select title, imdbRating from movies where imdbRating = 7.0 or imdbRating = 8.0`
@@ -82,10 +83,39 @@ i dont get it..
 #### 2.1
 `Select title, code from movies m, country c, playsInCountry pic where pic.m_id = m.id and c.id = pic.c_id`
 #### 2.2
-very very slow...
+###### simple
 `Select m.title, c.firstname, c.lastname, cf.name from movies m, crew c, crewFunction cf, isPartOf ipo where ipo.m_id = m.id and ipo.p_id = c.id and c.f_id = cf.id`
-
-tried: ?Select m.title, c.firstname, c.lastname, cf.name from isPartOf ipo 
-left join movies m on ipo.m_id = m.id
-left join crew c on ipo.p_id = c.id`
-
+###### with joins
+`Select m.title, c.firstname, c.lastname, cf.name from isPartOf ipo 
+left join movies m on ipo.m_id = m.id 
+left join crew c on ipo.p_id = c.id
+left join crewFunction cf on c.f_id = cf.id`
+#### 2.3
+`Select m.title, c.firstname, c.lastname, cf.name from movies m, crew c, crewFunction cf, isPartOf ipo where ipo.m_id = m.id and ipo.p_id = c.id and c.f_id = cf.id order by m.title asc`
+#### 2.4
+`Select m.title from movies m, user u, hasWatched hw where hw.m_id = m.id and hw.u_id = u.id and u.username = 'SwissMarco'`
+#### 2.5
+`Select m.title, hr.rank from movies m, hasRank hr where m.id = hr.m_id order by rank desc limit 5`
+#### 2.6
+`select m.title from movies m, hasKeyword hk, keywords k where m.id = hk.m_id and hk.k_id = k.id and k.name = 'teen movie' and m.year > 2000`
+#### 2.7
+`select avg(m.year), c.name from movies m
+left join hasCategory hc on m.id = hc.m_id
+left join category c on c.id = hc.c_id
+group by c.name`
+#### 2.8
+19122600
+`select sum(duration) from movies`
+#### 2.9
+`select m.title as Film, c.name as Kategorie from movies m, hasCategory hc, category c where hc.m_id = m.id and hc.c_id = c.id and c.name = 'horror'`
+#### 2.10
+`select name from category union select name from featureCategory`
+#### 2.11
+`select m.title, m.imdbRating, c.name from movies m
+left join hasCategory hc on hc.m_id = m.id
+left join category c on hc.c_id = c.id where  m.imdbRating >= 8.0 and (c.name = 'Action' or c.name = 'Comedy')`
+#### 2.12
+`select distinct(m.title) from movies m
+left join hasAward ha on ha.m_id = m.id
+inner join award a on ha.a_id = a.id
+where a.name = 'Golden Globes'`
