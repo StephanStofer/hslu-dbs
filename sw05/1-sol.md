@@ -79,5 +79,13 @@ i dont get it..
 #### 1.15
 234
 `select title, imdbRating, metascore from movies where metascore > 80 or imdbRating > 8.0 and year > 2012`
-#### 1.15
+#### 2.1
+`Select title, code from movies m, country c, playsInCountry pic where pic.m_id = m.id and c.id = pic.c_id`
+#### 2.2
+very very slow...
+`Select m.title, c.firstname, c.lastname, cf.name from movies m, crew c, crewFunction cf, isPartOf ipo where ipo.m_id = m.id and ipo.p_id = c.id and c.f_id = cf.id`
+
+tried: ?Select m.title, c.firstname, c.lastname, cf.name from isPartOf ipo 
+left join movies m on ipo.m_id = m.id
+left join crew c on ipo.p_id = c.id`
 
