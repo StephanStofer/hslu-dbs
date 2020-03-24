@@ -1,4 +1,4 @@
-# SW01 – Übungen SQL Grundlagen
+# SW05 – Übungen SQL Grundlagen
 ## 1. Selbststudium
 #### Welche Benutzergruppen gibt es und wie interagieren sie mit der Datenbank?
 Alle verwenden die gleiche Datenbanksprache. Somit können sie auch Erfahrungen und Wissen untereinander austauschen.
