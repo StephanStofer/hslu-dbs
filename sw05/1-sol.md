@@ -47,38 +47,38 @@ Union and Intersection mit keyword and/or möglich -> s.257
 #### 1.2
 `SELECT username from user`
 #### 1.3
-22
+22\
 `select count(*) from category`
 #### 1.4
-7292
+7292\
 `select count(distinct(lastname)) from crew`
 #### 1.5
-yes
+yes\
 `select title from movies where title = 'a beautiful mind'`
 #### 1.6
 `select * from award order by name desc`
 #### 1.7
 `select title from movies where budget > 280000000`
 #### 1.8
-yes
+yes\
 `select username from user where username like '%norris%'`
 #### 1.9
 `select name from keywords where name like 'can%'`
 #### 1.10
 `select username, location from user where location like 'Ba__'`
 #### 1.11
-age is always 0
+age is always 0\
 `select username, age from user where watched > 800 and age < 12`
 #### 1.12
 `select username, age from user where watched > 800 and age between 1 and 12`
 #### 1.13
-can be solved with the keyword between as used in ex 1.12.
+can be solved with the keyword between as used in ex 1.12.\
 there are 2 user exists: `select count(username) from user where watched > 800 and age between 1 and 12`
 #### 1.14
-1691
+1691\
 `select title, imdbRating from movies where imdbRating = 7.0 or imdbRating = 8.0`
 #### 1.15
-234
+234\
 `select title, imdbRating, metascore from movies where metascore > 80 or imdbRating > 8.0 and year > 2012`
 #### 2.1
 `Select title, code from movies m, country c, playsInCountry pic where pic.m_id = m.id and c.id = pic.c_id`
