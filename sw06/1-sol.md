@@ -159,8 +159,7 @@ select * from pfad
 where nach like '%thik';
 ```
 #### Was macht das Query genau? Wo befindet sich der Rekursionsschritt? Erklären Sie die Funktionsweise dieser Query.
-Das Query gibt die Wege aus, wie Module nacheinander absolviert werden können. Der Rekursionsschritt befindet sich beim `join pfad` im ```SQL
-select` nach dem `union all`
+Das Query gibt die Wege aus, wie Module nacheinander absolviert werden können. Der Rekursionsschritt befindet sich beim `join pfad` im `select` nach dem `union all`
 ## Windowing
 #### Query schreiben wo pro Professor Anzahl Wochenstunden zusammenrechnet und den Rang ausgibt. Es sind Windowing-Functions zu verwenden:
 ```SQL
