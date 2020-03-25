@@ -1,9 +1,13 @@
 #SW06 - SQL Sprachkonzepte
 ## Daten manipulieren
 #### Erstellen Sie eine Tabelle Hilfsassistenten mit gleichen Attributen wie Tabelle Assistenten
-`create table hilfsassistenten as select * from assistenten where 1=0`
+```SQL
+create table hilfsassistenten as select * from assistenten where 1=0;
+```
 #### Fügen Sie Hilfsassistenten ein
-`insert into hilfsassistenten values (3006,'Newton','Naturphilosophie',2136),(4001,'Chomsky','Sprachphilosophie',2137);`
+```SQL
+insert into hilfsassistenten values (3006,'Newton','Naturphilosophie',2136),(4001,'Chomsky','Sprachphilosophie',2137);
+```
 #### Ändern des Fachgebietes von Newton
 ```SQL
 update hilfsassistenten set fachgebiet = 'idealistische Mataphysik' 
