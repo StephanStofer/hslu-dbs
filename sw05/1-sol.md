@@ -18,8 +18,9 @@ Definieren in der relationalen Algebra die Operationen auf einer oder zwei Tabel
 3. Differenz (difference)
 4. kartesische Produkt (cartesian prodcut)
 ###### relationale Operatoren
-Die Relationen müssen hier nicht vereinigungsverträglich sein. Dies bedeutet, dass man mit diesen Operationen Daten selektiert oder projeziiert. Mit Hilfes des Verbundsoperator (join) können zwei Relationen über ein gemeinsames Merkmal kombiniert werden.
-#### Was ist der Zusammenhang von mengenorientierten Abfragesprachen und der Relationenalgebra?Alle Operationen lassen sich auf fünf Grundoperatoren der Relationenalgebra zurückführen (Vereinigung, Differenz, kartesisches Produkt, Projektions- und Selektionsoperatoren). Insebesondere ist die Relationenalgebra bei Optimierungen von Nutzen.
+Die Relationen müssen hier nicht vereinigungsverträglich sein. Dies bedeutet, dass man mit diesen Operationen Daten selektiert oder projeziiert. Mit Hilfes des Verbundsoperator (join) können zwei Relationen über ein gemeinsames Merkmal kombiniert werden. Können in Hardware realsiert werden -> entsprechend schnell.
+#### Was ist der Zusammenhang von mengenorientierten Abfragesprachen und der Relationenalgebra?
+Alle Operationen lassen sich auf fünf Grundoperatoren der Relationenalgebra zurückführen (Vereinigung, Differenz, kartesisches Produkt, Projektions- und Selektionsoperatoren). Insbesondere ist die Relationenalgebra bei Optimierungen von Nutzen.
 #### Wie wird die Selektion in SQL umgesetzt?
 Mit Hilfe der WHERE-Klausel
 #### Wie wird die Projektion in SQL umgesetzt?
@@ -96,19 +97,25 @@ SELECT username, location from user
 age is always 0
 ```sql
 SELECT username, age from user 
-    where watched > 800 and age < 12;
+    where watched > 800 and age < 11;
 ```
 #### 1.12
 ```sql
 SELECT username, age from user 
-    where watched > 800 and age between 1 and 12;
+    where watched > 800 and age between 1 and 11;
 ```
 #### 1.13
 can be solved with the keyword between as used in ex 1.12.\
 there are 2 users: 
 ```sql
 SELECT count(username) from user 
-    where watched > 800 and age between 1 and 12;
+    where watched > 800 and age between 1 and 11;
+```
+```sql
+SELECT age, username
+    FROM user
+    WHERE age < 12 
+    AND watched > 800 AND age <> 0;
 ```
 #### 1.14
 1691
@@ -156,8 +163,9 @@ SELECT m.title from movies m, user u, hasWatched hw
 ```
 #### 2.5
 ```sql
-SELECT m.title, hr.rank from movies m, hasRank hr 
-    where m.id = hr.m_id order by rank desc limit 5;
+SELECT title,rank FROM movies,hasRank,movieRank
+    WHERE movies.id = m_id AND movieRank.id = r_id AND name = "All Time Worldwide"
+    ORDER BY rank asc LIMIT 5
 ```
 #### 2.6
 ```sql
@@ -192,7 +200,13 @@ select name from featureCategory;
 ```sql
 SELECT m.title, m.imdbRating, c.name from movies m
     left join hasCategory hc on hc.m_id = m.id
-    left join category c on hc.c_id = c.id where  m.imdbRating >= 8.0 and (c.name = 'Action' or c.name = 'Comedy');
+    left join category c on hc.c_id = c.id 
+    where  m.imdbRating >= 8.0 and (c.name = 'Action' or c.name = 'Comedy');
+```
+```sql
+SELECT title AS Movie ,name AS Category, imdbRating as IMDB 
+    FROM movies,hasCategory,category 
+    WHERE movies.id=m_id AND category.id=c_id AND imdbRating >8 AND name IN  ("action","comedy");
 ```
 #### 2.12
 ```sql
