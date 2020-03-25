@@ -43,79 +43,161 @@ Integer values in '' -> s.255
 Union and Intersection mit keyword and/or möglich -> s.257
 ## 3. SQL Workbench
 #### 1.1
-`SELECT * FROM movies`
+```sql
+SELECT * FROM movies;
+```
 #### 1.2
-`SELECT username from user`
+```sql
+SELECT username from user;
+```
 #### 1.3
-22\
-`select count(*) from category`
+22
+```sql
+SELECT count(*) from category;
+```
 #### 1.4
-7292\
-`select count(distinct(lastname)) from crew`
+7292
+```sql
+SELECT count(distinct(lastname)) from crew;
+```
 #### 1.5
-yes\
-`select title from movies where title = 'a beautiful mind'`
+yes
+```sql
+SELECT title from movies 
+    where title = 'a beautiful mind';
+```
 #### 1.6
-`select * from award order by name desc`
+```sql
+SELECT * from award 
+    order by name desc;
+```
 #### 1.7
-`select title from movies where budget > 280000000`
+```sql
+SELECT title from movies 
+    where budget > 280000000;
+```
 #### 1.8
-yes\
-`select username from user where username like '%norris%'`
+yes
+```sql
+SELECT username from user 
+    where username like '%norris%';
+```
 #### 1.9
-`select name from keywords where name like 'can%'`
+```sql
+SELECT name from keywords 
+    where name like 'can%';
+```
 #### 1.10
-`select username, location from user where location like 'Ba__'`
+```sql
+SELECT username, location from user 
+    where location like 'Ba__';
+```
 #### 1.11
-age is always 0\
-`select username, age from user where watched > 800 and age < 12`
+age is always 0
+```sql
+SELECT username, age from user 
+    where watched > 800 and age < 12;
+```
 #### 1.12
-`select username, age from user where watched > 800 and age between 1 and 12`
+```sql
+SELECT username, age from user 
+    where watched > 800 and age between 1 and 12;
+```
 #### 1.13
 can be solved with the keyword between as used in ex 1.12.\
-there are 2 user exists: `select count(username) from user where watched > 800 and age between 1 and 12`
+there are 2 user exists: 
+```sql
+SELECT count(username) from user 
+    where watched > 800 and age between 1 and 12;
+```
 #### 1.14
-1691\
-`select title, imdbRating from movies where imdbRating = 7.0 or imdbRating = 8.0`
+1691
+```sql
+SELECT title, imdbRating from movies 
+    where imdbRating = 7.0 or imdbRating = 8.0;
+```
 #### 1.15
-234\
-`select title, imdbRating, metascore from movies where metascore > 80 or imdbRating > 8.0 and year > 2012`
+234
+```sql
+SELECT title, imdbRating, metascore from movies 
+    where metascore > 80 or imdbRating > 8.0 and year > 2012;
+```
 #### 2.1
-`Select title, code from movies m, country c, playsInCountry pic where pic.m_id = m.id and c.id = pic.c_id`
+```sql
+SELECT title, code from movies m, country c, playsInCountry pic 
+    where pic.m_id = m.id and c.id = pic.c_id;
+```
 #### 2.2
 ###### simple
-`Select m.title, c.firstname, c.lastname, cf.name from movies m, crew c, crewFunction cf, isPartOf ipo where ipo.m_id = m.id and ipo.p_id = c.id and c.f_id = cf.id`
+```sql
+SELECT m.title, c.firstname, c.lastname, cf.name 
+    from movies m, crew c, crewFunction cf, isPartOf ipo 
+    where ipo.m_id = m.id and ipo.p_id = c.id and c.f_id = cf.id;
+```
 ###### with joins
-`Select m.title, c.firstname, c.lastname, cf.name from isPartOf ipo 
-left join movies m on ipo.m_id = m.id 
-left join crew c on ipo.p_id = c.id
-left join crewFunction cf on c.f_id = cf.id`
+```sql
+SELECT m.title, c.firstname, c.lastname, cf.name 
+    from isPartOf ipo 
+    left join movies m on ipo.m_id = m.id 
+    left join crew c on ipo.p_id = c.id
+    left join crewFunction cf on c.f_id = cf.id
+```
 #### 2.3
-`Select m.title, c.firstname, c.lastname, cf.name from movies m, crew c, crewFunction cf, isPartOf ipo where ipo.m_id = m.id and ipo.p_id = c.id and c.f_id = cf.id order by m.title asc`
+```sql
+SELECT m.title, c.firstname, c.lastname, cf.name 
+    from movies m, crew c, crewFunction cf, isPartOf ipo 
+    where ipo.m_id = m.id and ipo.p_id = c.id and c.f_id = cf.id 
+    order by m.title asc
+```
 #### 2.4
-`Select m.title from movies m, user u, hasWatched hw where hw.m_id = m.id and hw.u_id = u.id and u.username = 'SwissMarco'`
+```sql
+SELECT m.title from movies m, user u, hasWatched hw 
+    where hw.m_id = m.id and hw.u_id = u.id and u.username = 'SwissMarco'
+```
 #### 2.5
-`Select m.title, hr.rank from movies m, hasRank hr where m.id = hr.m_id order by rank desc limit 5`
+```sql
+SELECT m.title, hr.rank from movies m, hasRank hr 
+    where m.id = hr.m_id order by rank desc limit 5
+```
 #### 2.6
-`select m.title from movies m, hasKeyword hk, keywords k where m.id = hk.m_id and hk.k_id = k.id and k.name = 'teen movie' and m.year > 2000`
+```sql
+SELECT m.title from movies m, hasKeyword hk, keywords k 
+    where m.id = hk.m_id and hk.k_id = k.id and k.name = 'teen movie' and m.year > 2000
+```
 #### 2.7
-`select avg(m.year), c.name from movies m
-left join hasCategory hc on m.id = hc.m_id
-left join category c on c.id = hc.c_id
-group by c.name`
+```sql
+SELECT avg(m.year), c.name from movies m
+    left join hasCategory hc on m.id = hc.m_id
+    left join category c on c.id = hc.c_id
+    group by c.name
+```
 #### 2.8
 19122600
-`select sum(duration) from movies`
+```sql
+SELECT sum(duration) from movies
+```
 #### 2.9
-`select m.title as Film, c.name as Kategorie from movies m, hasCategory hc, category c where hc.m_id = m.id and hc.c_id = c.id and c.name = 'horror'`
+```sql
+SELECT m.title as Film, c.name as Kategorie 
+    from movies m, hasCategory hc, category c 
+    where hc.m_id = m.id and hc.c_id = c.id and c.name = 'horror'
+```
 #### 2.10
-`select name from category union select name from featureCategory`
+```sql
+SELECT name from category 
+    union 
+select name from featureCategory
+```
 #### 2.11
-`select m.title, m.imdbRating, c.name from movies m
-left join hasCategory hc on hc.m_id = m.id
-left join category c on hc.c_id = c.id where  m.imdbRating >= 8.0 and (c.name = 'Action' or c.name = 'Comedy')`
+```sql
+SELECT m.title, m.imdbRating, c.name from movies m
+    left join hasCategory hc on hc.m_id = m.id
+    left join category c on hc.c_id = c.id where  m.imdbRating >= 8.0 and (c.name = 'Action' or c.name = 'Comedy')
+```
 #### 2.12
-`select distinct(m.title) from movies m
-left join hasAward ha on ha.m_id = m.id
-inner join award a on ha.a_id = a.id
-where a.name = 'Golden Globes'`
+```sql
+SELECT distinct(m.title) from movies m
+    left join hasAward ha on ha.m_id = m.id
+    inner join award a on ha.a_id = a.id
+    where a.name = 'Golden Globes'
+```
