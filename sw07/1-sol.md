@@ -1,4 +1,4 @@
-#SW07 - SQL Performance
+# SW07 - SQL Performance
 ## Selbststudium
 #### Welche der Schichten der Datenbankarchitektur sind für die Anfrageoptimierung relevant, und weshalb?
 ##### Schicht1: Mengenorientierte Schnittstelle
@@ -51,6 +51,7 @@ EXPLAIN select * from moreStudenten where Name = 'Studentin_12345';
 | id | select\_type | table | partitions | type | possible\_keys | key | key\_len | ref | rows | filtered | Extra |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
 | 1 | SIMPLE | moreStudenten | NULL | ALL | NULL | NULL | NULL | NULL | 996887 | 10 | Using where |
+
 Bei der Abfrage über den Namen wurden beinahe 1Mio. Rows geprüft (mit Where), bei der Abfrage via Matrikelnummer lediglich eine. Weiter sagt und die Spalte filtered, dass mit der Abfrage zu 100 bzw. 10% eingeschränkt wurde. Was bei erster natürlich nicht besser möglich ist. Weiter gibt der Typ auch Auskunft über die Effizienz, bei const hat die Tabelle einen Treffer - bei all muss ein fullscan gemacht werden.
 ## Logische Optimierung
 Führen Sie folgende Query aus:
@@ -116,6 +117,7 @@ Die Abfrage dauert noch zwischen 207 bis 243ms.
 | 1 | SIMPLE | h | NULL | ref | PRIMARY | PRIMARY | 4 | moreunidata2.moreStudenten.MatrNr | 99 | 100 | Using index |
 | 1 | SIMPLE | v | NULL | eq\_ref | PRIMARY | PRIMARY | 4 | moreunidata2.h.VorlNr | 1 | 100 | Using where |
 | 1 | SIMPLE | p | NULL | eq\_ref | PRIMARY | PRIMARY | 4 | moreunidata2.v.gelesenVon | 1 | 100 | NULL |
+
 Am Typ erkennt man es schnell, vorher war es All, nun nur noch range. Mit der logischen Optimierung wär auch dieses Query noch effizienter.
 #### Erstellen Sie einen Index auf das Attribute `Name` in der Tabelle `moreStudenten`. Wie sieht die Syntax aus?
 ```sql
@@ -136,6 +138,7 @@ Das Query dauert noch zwischen 24-37ms
 | 1 | SIMPLE | h | NULL | ref | PRIMARY | PRIMARY | 4 | moreunidata2.moreStudenten.MatrNr | 99 | 100 | Using index |
 | 1 | SIMPLE | v | NULL | eq\_ref | PRIMARY | PRIMARY | 4 | moreunidata2.h.VorlNr | 1 | 100 | Using where |
 | 1 | SIMPLE | p | NULL | eq\_ref | PRIMARY | PRIMARY | 4 | moreunidata2.v.gelesenVon | 1 | 100 | NULL |
+
 Die Filterung ist zu 100 Prozent effizient.
 #### Wie lange dauert folgende Anfrage? Warum? erklären Sie anhand des Explain plans.
 ```sql
@@ -150,6 +153,7 @@ join moreProfessoren p on (p.PersNr = v.gelesenVon) where s.Name like 'Studentin
 | 1 | SIMPLE | v | NULL | eq\_ref | PRIMARY | PRIMARY | 4 | moreunidata2.h.VorlNr | 1 | 100 | Using where |
 | 1 | SIMPLE | p | NULL | eq\_ref | PRIMARY | PRIMARY | 4 | moreunidata2.v.gelesenVon | 1 | 100 | NULL |
 | 1 | SIMPLE | moreStudenten | NULL | eq\_ref | PRIMARY,studenName | PRIMARY | 4 | moreunidata2.h.MatrNr | 1 | 50 | Using where |
+
 Die Abfrage dauert rund 12s595ms. Als Vergleichsoperator wird Like verwendet und die Filterausbeute sinkt auf 50%, das heisst dass die Hälfte aller Zeilen gegeben das Argument verglichen werden müssen.
 #### Wie lange dauert die folgende Anfrage? Warum? Erklären Sie anhand des Explain Plans.
 ```sql
@@ -164,4 +168,5 @@ join moreProfessoren p on (p.PersNr = v.gelesenVon) where left(s.Name, 17) = 'St
 | 1 | SIMPLE | v | NULL | eq\_ref | PRIMARY | PRIMARY | 4 | moreunidata2.h.VorlNr | 1 | 100 | Using where |
 | 1 | SIMPLE | p | NULL | eq\_ref | PRIMARY | PRIMARY | 4 | moreunidata2.v.gelesenVon | 1 | 100 | NULL |
 | 1 | SIMPLE | moreStudenten | NULL | eq\_ref | PRIMARY | PRIMARY | 4 | moreunidata2.h.MatrNr | 1 | 100 | Using where |
+
 Die Abfrage dauert 12s852ms. Der Index auf dem Namen wird nicht mehr angewendet, weshalb die ganze Range abgesucht wird.
