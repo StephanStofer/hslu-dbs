@@ -116,4 +116,52 @@ Die Abfrage dauert noch zwischen 207 bis 243ms.
 | 1 | SIMPLE | h | NULL | ref | PRIMARY | PRIMARY | 4 | moreunidata2.moreStudenten.MatrNr | 99 | 100 | Using index |
 | 1 | SIMPLE | v | NULL | eq\_ref | PRIMARY | PRIMARY | 4 | moreunidata2.h.VorlNr | 1 | 100 | Using where |
 | 1 | SIMPLE | p | NULL | eq\_ref | PRIMARY | PRIMARY | 4 | moreunidata2.v.gelesenVon | 1 | 100 | NULL |
-
+Am Typ erkennt man es schnell, vorher war es All, nun nur noch range. Mit der logischen Optimierung wär auch dieses Query noch effizienter.
+#### Erstellen Sie einen Index auf das Attribute `Name` in der Tabelle `moreStudenten`. Wie sieht die Syntax aus?
+```sql
+create index studenName on moreStudenten(Name);
+```
+#### Führen Sie nun die Query aus Aufgabe 5 erneut aus, wie lange dauert das Query jetzt?
+```sql
+select s.Name, v.titel, p.Name from
+(select * from moreStudenten where MatrNr > 555555) s join morehoeren h on (s.MatrNr = h.MatrNr)
+join moreVorlesungen v on (h.VorlNr = v.VorlNr)
+join moreProfessoren p on (p.PersNr = v.gelesenVon) where s.Name = 'Studentin_12400';
+```
+Das Query dauert noch zwischen 24-37ms
+#### Wie sieht der Explain Plan aus? Woran sehen Sie die Optimierung gegenüber vorher?
+| id | select\_type | table | partitions | type | possible\_keys | key | key\_len | ref | rows | filtered | Extra |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 | SIMPLE | moreStudenten | NULL | range | PRIMARY,studenName | studenName | 36 | NULL | 1 | 100 | Using where; Using index |
+| 1 | SIMPLE | h | NULL | ref | PRIMARY | PRIMARY | 4 | moreunidata2.moreStudenten.MatrNr | 99 | 100 | Using index |
+| 1 | SIMPLE | v | NULL | eq\_ref | PRIMARY | PRIMARY | 4 | moreunidata2.h.VorlNr | 1 | 100 | Using where |
+| 1 | SIMPLE | p | NULL | eq\_ref | PRIMARY | PRIMARY | 4 | moreunidata2.v.gelesenVon | 1 | 100 | NULL |
+Die Filterung ist zu 100 Prozent effizient.
+#### Wie lange dauert folgende Anfrage? Warum? erklären Sie anhand des Explain plans.
+```sql
+select s.Name, v.titel, p.Name from
+(select * from moreStudenten where MatrNr > 555555) s join morehoeren h on (s.MatrNr = h.MatrNr)
+join moreVorlesungen v on (h.VorlNr = v.VorlNr)
+join moreProfessoren p on (p.PersNr = v.gelesenVon) where s.Name like 'Studentin_12400';
+```
+| id | select\_type | table | partitions | type | possible\_keys | key | key\_len | ref | rows | filtered | Extra |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 | SIMPLE | h | NULL | range | PRIMARY | PRIMARY | 4 | NULL | 5490486 | 100 | Using where; Using index |
+| 1 | SIMPLE | v | NULL | eq\_ref | PRIMARY | PRIMARY | 4 | moreunidata2.h.VorlNr | 1 | 100 | Using where |
+| 1 | SIMPLE | p | NULL | eq\_ref | PRIMARY | PRIMARY | 4 | moreunidata2.v.gelesenVon | 1 | 100 | NULL |
+| 1 | SIMPLE | moreStudenten | NULL | eq\_ref | PRIMARY,studenName | PRIMARY | 4 | moreunidata2.h.MatrNr | 1 | 50 | Using where |
+Die Abfrage dauert rund 12s595ms. Als Vergleichsoperator wird Like verwendet und die Filterausbeute sinkt auf 50%, das heisst dass die Hälfte aller Zeilen gegeben das Argument verglichen werden müssen.
+#### Wie lange dauert die folgende Anfrage? Warum? Erklären Sie anhand des Explain Plans.
+```sql
+select s.Name, v.titel, p.Name from
+(select * from moreStudenten where MatrNr > 555555) s join morehoeren h on (s.MatrNr = h.MatrNr)
+join moreVorlesungen v on (h.VorlNr = v.VorlNr)
+join moreProfessoren p on (p.PersNr = v.gelesenVon) where left(s.Name, 17) = 'Studentin_123456'
+```
+| id | select\_type | table | partitions | type | possible\_keys | key | key\_len | ref | rows | filtered | Extra |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 | SIMPLE | h | NULL | range | PRIMARY | PRIMARY | 4 | NULL | 5490486 | 100 | Using where; Using index |
+| 1 | SIMPLE | v | NULL | eq\_ref | PRIMARY | PRIMARY | 4 | moreunidata2.h.VorlNr | 1 | 100 | Using where |
+| 1 | SIMPLE | p | NULL | eq\_ref | PRIMARY | PRIMARY | 4 | moreunidata2.v.gelesenVon | 1 | 100 | NULL |
+| 1 | SIMPLE | moreStudenten | NULL | eq\_ref | PRIMARY | PRIMARY | 4 | moreunidata2.h.MatrNr | 1 | 100 | Using where |
+Die Abfrage dauert 12s852ms. Der Index auf dem Namen wird nicht mehr angewendet, weshalb die ganze Range abgesucht wird.
