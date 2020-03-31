@@ -61,7 +61,7 @@ select s.Name, v.titel, p.Name from
 join moreVorlesungen v on (h.VorlNr = v.VorlNr) join moreProfessoren p on (p.PersNr = v.gelesenVon) where s.Name = 'Studentin_12400';
 ```
 #### Wie lange dauert die Abfrage?
-Bei 4 Aufrufen zwischen 12s660ms-12s990ms
+Bei 4 Aufrufen zwischen `12s660ms`-`12s990ms
 #### Wie sieht der Explain Plan für diese Anfrage aus?
 ```sql
 Explain select s.Name, v.titel, p.Name from
@@ -85,7 +85,7 @@ select s.Name, s.MatrNr, v.titel, p.Name from
 join moreVorlesungen v on (h.VorlNr = v.VorlNr) join moreProfessoren p on (p.PersNr = v.gelesenVon);
 ```
 #### Wie lange dauert das logisch optimierte Query?
-Bei 4 Anfragen zwischen 3s151ms-3s261ms
+Bei 4 Anfragen zwischen `3s151ms`-`3s261ms`
 #### Wie sieht der Explain Plan für die logisch optimierte Anfrage aus?
 | id | select\_type | table | partitions | type | possible\_keys | key | key\_len | ref | rows | filtered | Extra |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -99,7 +99,7 @@ Bei 4 Anfragen zwischen 3s151ms-3s261ms
 alter table moreHoeren add constraint primary key (MatrNr,
 VorlNr);
 ```
-Das Ausführen des Befehls dauert 10s601ms
+Das Ausführen des Befehls dauert `10s601ms`
 #### Was bedeutet dies bezüglich Kosten/Nutzen Überlegungen?
 Die Kosten sind realtiv hoch und dauert länger als obiges optimiertes Query. Der Index lohnt sich sofern die Daten mehr als einmal abgefragt werden. 
 #### Führen Sie das obige Query nochmals aus, wie lange dasuert das Query jetzt?
@@ -109,7 +109,7 @@ select s.Name, v.titel, p.Name from
 join moreVorlesungen v on (h.VorlNr = v.VorlNr)
 join moreProfessoren p on (p.PersNr = v.gelesenVon) where s.Name = 'Studentin_12400';
 ```
-Die Abfrage dauert noch zwischen 207 bis 243ms.
+Die Abfrage dauert noch zwischen `207ms` bis `243ms`.
 #### Wie sieht der Explain Plan aus? Woran sehen Sie die Optimierungen gegenüber vorher?
 | id | select\_type | table | partitions | type | possible\_keys | key | key\_len | ref | rows | filtered | Extra |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -130,7 +130,7 @@ select s.Name, v.titel, p.Name from
 join moreVorlesungen v on (h.VorlNr = v.VorlNr)
 join moreProfessoren p on (p.PersNr = v.gelesenVon) where s.Name = 'Studentin_12400';
 ```
-Das Query dauert noch zwischen 24-37ms
+Das Query dauert noch zwischen `24ms`-`37ms`
 #### Wie sieht der Explain Plan aus? Woran sehen Sie die Optimierung gegenüber vorher?
 | id | select\_type | table | partitions | type | possible\_keys | key | key\_len | ref | rows | filtered | Extra |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -154,7 +154,7 @@ join moreProfessoren p on (p.PersNr = v.gelesenVon) where s.Name like 'Studentin
 | 1 | SIMPLE | p | NULL | eq\_ref | PRIMARY | PRIMARY | 4 | moreunidata2.v.gelesenVon | 1 | 100 | NULL |
 | 1 | SIMPLE | moreStudenten | NULL | eq\_ref | PRIMARY,studenName | PRIMARY | 4 | moreunidata2.h.MatrNr | 1 | 50 | Using where |
 
-Die Abfrage dauert rund 12s595ms. Als Vergleichsoperator wird Like verwendet und die Filterausbeute sinkt auf 50%, das heisst dass die Hälfte aller Zeilen gegeben das Argument verglichen werden müssen.
+Die Abfrage dauert rund `12s595ms`. Als Vergleichsoperator wird Like verwendet und die Filterausbeute sinkt auf 50%, das heisst dass die Hälfte aller Zeilen gegeben das Argument verglichen werden müssen.
 #### Wie lange dauert die folgende Anfrage? Warum? Erklären Sie anhand des Explain Plans.
 ```sql
 select s.Name, v.titel, p.Name from
@@ -169,4 +169,4 @@ join moreProfessoren p on (p.PersNr = v.gelesenVon) where left(s.Name, 17) = 'St
 | 1 | SIMPLE | p | NULL | eq\_ref | PRIMARY | PRIMARY | 4 | moreunidata2.v.gelesenVon | 1 | 100 | NULL |
 | 1 | SIMPLE | moreStudenten | NULL | eq\_ref | PRIMARY | PRIMARY | 4 | moreunidata2.h.MatrNr | 1 | 100 | Using where |
 
-Die Abfrage dauert 12s852ms. Der Index auf dem Namen wird nicht mehr angewendet, weshalb die ganze Range abgesucht wird.
+Die Abfrage dauert `12s852ms`. Der Index auf dem Namen wird nicht mehr angewendet, weshalb die ganze Range abgesucht wird.
