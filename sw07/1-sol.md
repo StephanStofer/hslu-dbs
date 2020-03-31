@@ -24,12 +24,12 @@ Lokal wird eine Datenbank mit einer grösseren Anzahl Datensätzen erstellt.
 Use moreUniData2;
 select * from moreStudenten where MatrNr = 1012345;
 ```
-Die Anfrage dauert bei 10 Abfragen zwischen 23-33ms
+Die Anfrage dauert bei 10 Abfragen zwischen `23-33ms`
 #### Selektieren Sie die gleiche Studentin über den Namen
 ```sql
 select * from moreStudenten where Name = 'Studentin_12345';
 ```
-Die Anfrage dauert bei 10 Abfragen zwischen 193-203ms
+Die Anfrage dauert bei 10 Abfragen zwischen `193-203ms`
 #### Wie viel länger dauert welche Query? Wie erklären Sie sich diesen Unterschied?
 Die Abfrage über den Namen dauert 6 bis 7 mal länger als über die Matrikel-Nr. Die Matrikel-Nr ist gleichzeitig PrimaryKey und damit automatisch indexiert. Evtl. könnte zudem ein Zahlenvergleich effizienter als ein Stringvergleich sein?
 ##Query Execution Plan
