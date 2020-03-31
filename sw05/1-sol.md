@@ -18,8 +18,9 @@ Definieren in der relationalen Algebra die Operationen auf einer oder zwei Tabel
 3. Differenz (difference)
 4. kartesische Produkt (cartesian prodcut)
 ###### relationale Operatoren
-Die Relationen müssen hier nicht vereinigungsverträglich sein. Dies bedeutet, dass man mit diesen Operationen Daten selektiert oder projeziiert. Mit Hilfes des Verbundsoperator (join) können zwei Relationen über ein gemeinsames Merkmal kombiniert werden.
-#### Was ist der Zusammenhang von mengenorientierten Abfragesprachen und der Relationenalgebra?Alle Operationen lassen sich auf fünf Grundoperatoren der Relationenalgebra zurückführen (Vereinigung, Differenz, kartesisches Produkt, Projektions- und Selektionsoperatoren). Insebesondere ist die Relationenalgebra bei Optimierungen von Nutzen.
+Die Relationen müssen hier nicht vereinigungsverträglich sein. Dies bedeutet, dass man mit diesen Operationen Daten selektiert oder projeziiert. Mit Hilfes des Verbundsoperator (join) können zwei Relationen über ein gemeinsames Merkmal kombiniert werden. Können in Hardware realsiert werden -> entsprechend schnell.
+#### Was ist der Zusammenhang von mengenorientierten Abfragesprachen und der Relationenalgebra?
+Alle Operationen lassen sich auf fünf Grundoperatoren der Relationenalgebra zurückführen (Vereinigung, Differenz, kartesisches Produkt, Projektions- und Selektionsoperatoren). Insbesondere ist die Relationenalgebra bei Optimierungen von Nutzen.
 #### Wie wird die Selektion in SQL umgesetzt?
 Mit Hilfe der WHERE-Klausel
 #### Wie wird die Projektion in SQL umgesetzt?
@@ -96,19 +97,25 @@ SELECT username, location from user
 age is always 0
 ```sql
 SELECT username, age from user 
-    where watched > 800 and age < 12;
+    where watched > 800 and age < 11;
 ```
 #### 1.12
 ```sql
 SELECT username, age from user 
-    where watched > 800 and age between 1 and 12;
+    where watched > 800 and age between 1 and 11;
 ```
 #### 1.13
 can be solved with the keyword between as used in ex 1.12.\
-there are 2 user exists: 
+there are 2 users: 
 ```sql
 SELECT count(username) from user 
-    where watched > 800 and age between 1 and 12;
+    where watched > 800 and age between 1 and 11;
+```
+```sql
+SELECT age, username
+    FROM user
+    WHERE age < 12 
+    AND watched > 800 AND age <> 0;
 ```
 #### 1.14
 1691
@@ -140,64 +147,71 @@ SELECT m.title, c.firstname, c.lastname, cf.name
     from isPartOf ipo 
     left join movies m on ipo.m_id = m.id 
     left join crew c on ipo.p_id = c.id
-    left join crewFunction cf on c.f_id = cf.id
+    left join crewFunction cf on c.f_id = cf.id;
 ```
 #### 2.3
 ```sql
 SELECT m.title, c.firstname, c.lastname, cf.name 
     from movies m, crew c, crewFunction cf, isPartOf ipo 
     where ipo.m_id = m.id and ipo.p_id = c.id and c.f_id = cf.id 
-    order by m.title asc
+    order by m.title asc;
 ```
 #### 2.4
 ```sql
 SELECT m.title from movies m, user u, hasWatched hw 
-    where hw.m_id = m.id and hw.u_id = u.id and u.username = 'SwissMarco'
+    where hw.m_id = m.id and hw.u_id = u.id and u.username = 'SwissMarco';
 ```
 #### 2.5
 ```sql
-SELECT m.title, hr.rank from movies m, hasRank hr 
-    where m.id = hr.m_id order by rank desc limit 5
+SELECT title,rank FROM movies,hasRank,movieRank
+    WHERE movies.id = m_id AND movieRank.id = r_id AND name = "All Time Worldwide"
+    ORDER BY rank asc LIMIT 5
 ```
 #### 2.6
 ```sql
 SELECT m.title from movies m, hasKeyword hk, keywords k 
-    where m.id = hk.m_id and hk.k_id = k.id and k.name = 'teen movie' and m.year > 2000
+    where m.id = hk.m_id and hk.k_id = k.id and k.name = 'teen movie' and m.year > 2000;
 ```
 #### 2.7
 ```sql
 SELECT avg(m.year), c.name from movies m
     left join hasCategory hc on m.id = hc.m_id
     left join category c on c.id = hc.c_id
-    group by c.name
+    group by c.name;
 ```
 #### 2.8
 19122600
 ```sql
-SELECT sum(duration) from movies
+SELECT sum(duration) from movies;
 ```
 #### 2.9
 ```sql
 SELECT m.title as Film, c.name as Kategorie 
     from movies m, hasCategory hc, category c 
-    where hc.m_id = m.id and hc.c_id = c.id and c.name = 'horror'
+    where hc.m_id = m.id and hc.c_id = c.id and c.name = 'horror';
 ```
 #### 2.10
 ```sql
 SELECT name from category 
     union 
-select name from featureCategory
+select name from featureCategory;
 ```
 #### 2.11
 ```sql
 SELECT m.title, m.imdbRating, c.name from movies m
     left join hasCategory hc on hc.m_id = m.id
-    left join category c on hc.c_id = c.id where  m.imdbRating >= 8.0 and (c.name = 'Action' or c.name = 'Comedy')
+    left join category c on hc.c_id = c.id 
+    where  m.imdbRating >= 8.0 and (c.name = 'Action' or c.name = 'Comedy');
+```
+```sql
+SELECT title AS Movie ,name AS Category, imdbRating as IMDB 
+    FROM movies,hasCategory,category 
+    WHERE movies.id=m_id AND category.id=c_id AND imdbRating >8 AND name IN  ("action","comedy");
 ```
 #### 2.12
 ```sql
 SELECT distinct(m.title) from movies m
     left join hasAward ha on ha.m_id = m.id
     inner join award a on ha.a_id = a.id
-    where a.name = 'Golden Globes'
+    where a.name = 'Golden Globes';
 ```
