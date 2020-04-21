@@ -48,7 +48,7 @@ grant select on Vorlesungen to Student;
 grant select on Professoren to Student;
 ```
 #### Erstellen Sie Prof, Assi und Student einen Benutzer
-````sql
+```sql
 SET @s:='';
 SELECT @s:= concat(@s, 'CREATE USER ', name, ' IDENTIFIED BY "Passw0rd!";\n') as c
 from(
@@ -56,6 +56,7 @@ select 'Student' as rolle, name from studenten
 union select 'C4', name from professoren where Rang = 'C4' union select 'C3', name from professoren where Rang = 'C3' union select 'Assistent', name from assistenten
 )a;
 select @s;
+```
 ```sql
 GRANT 'Professor' TO 'Xenokrates';
 ```
