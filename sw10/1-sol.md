@@ -40,5 +40,48 @@ In der Uni-DB sollen folgende Zugriffsrechte gelten:
 * Studenten dürfen nichts schreiben und nur folgende Tabellen Lesen: Vorlesungen und Professoren
 #### Erstellen Sie die Rollen Professor, Assistent, Student und erteilen Sie die oben beschriebenen Berechtigungen mit SQL.
 ```sql
-
+create role 'Professor', 'Assistent', 'Student';
+grant all on * to Professor; -- don't know how to select "Rang" value
+grant select on * to Assistent;
+grant insert, update on Studenten to Assistent;
+grant select on Vorlesungen to Student;
+grant select on Professoren to Student;
 ```
+#### Erstellen Sie Prof, Assi und Student einen Benutzer
+````sql
+SET @s:='';
+SELECT @s:= concat(@s, 'CREATE USER ', name, ' IDENTIFIED BY "Passw0rd!";\n') as c
+from(
+select 'Student' as rolle, name from studenten
+union select 'C4', name from professoren where Rang = 'C4' union select 'C3', name from professoren where Rang = 'C3' union select 'Assistent', name from assistenten
+)a;
+select @s;
+```sql
+GRANT 'Professor' TO 'Xenokrates';
+```
+#### Die Studenten sollen in der Tabelle Prüfungen nur Ihre eigenen Noten sehen können. Programmieren Sie eine Lösung
+```sql
+SELECT Note from prüfen inner join Studenten S on prüfen.MatrNr = S.MatrNr where s.Name = user();
+```
+## SQL-Injection: Programmierung
+#### Auf welche weite Arten ist der Server mit SQL angreifbar? Kommen Sie an die Passwörter ran?
+? Es werden alle PW ausgegeben.
+#### Verhinder Sie SQL-Injection mit Hilfe eines
+##### Mit einem Client Side prepared statement
+```java
+PreparedStatement ps = connection.prepareStatement("SELECT * from Studenten s join prüfen p on s" +
+                        ".MatrNr = p.MatrNr " +
+                        "Where " +
+                        "s.Name = ? and s.Passwort = ?");
+                ps.setString(1, user);
+                ps.setString(2, pw);
+                ResultSet resultset = ps.executeQuery();
+```
+##### Mit einem Server Side prepared statement
+```sql
+prepare login_statement from 'SELECT * from Studenten s join prüfen p on s.MatrNr = p.MatrNr Where s.Name = ? and s.Passwort = ?';
+```
+```java
+```
+
+
