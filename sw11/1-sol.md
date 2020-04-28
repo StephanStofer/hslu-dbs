@@ -71,7 +71,15 @@ Recovery bedeutet das Wiederherstellen eines korrekten Datenbankzustandes nach e
 ## Referenzielle Integrität in SQL
 #### Definieren Sie alle referentiellen Constraints als Primär- und Fremdschlüssel für die Uni-DB
 ```sql
-select CONSTRAINT_NAME,TABLE_NAME,COLUMN_NAME,ORDINAL_POSITION, POSITION_IN_UNIQUE_CONSTRAINT, REFERENCED_TABLE_NAME,REFERENCED_COLUMN_NAME from information_schema.KEY_COLUMN_USAGE where CONSTRAINT_SCHEMA = 'uni4';
+select CONSTRAINT_NAME,
+       TABLE_NAME,
+       COLUMN_NAME,
+       ORDINAL_POSITION,
+       POSITION_IN_UNIQUE_CONSTRAINT,
+       REFERENCED_TABLE_NAME,
+       REFERENCED_COLUMN_NAME
+from information_schema.KEY_COLUMN_USAGE
+where CONSTRAINT_SCHEMA = 'uni4';
 ```
 | CONSTRAINT\_NAME | TABLE\_NAME | COLUMN\_NAME | ORDINAL\_POSITION | POSITION\_IN\_UNIQUE\_CONSTRAINT | REFERENCED\_TABLE\_NAME | REFERENCED\_COLUMN\_NAME |
 | :--- | :--- | :--- | :--- | :--- | :--- | :--- |
@@ -187,7 +195,7 @@ add constraint Raum unique(Raum);
 #### Note darf nur zwischen 1.0 und 5.0 sein
 ```sql
 alter table prüfen
-add constraint Note check ( Note >= 1.0 && Note <= 5.0 );
+add constraint Note check ( Note >= 1.0 and Note <= 5.0 );
 ```
 #### Name darf nicht leer sein
 ```sql
@@ -212,3 +220,11 @@ end if;
 END $$
 ```
 #### Testen des Triggers, prüfen ob Rang degradiert werden kann und Server reponse auswerten
+Updatequery
+```sql
+update Professoren set Rang = 'C2' where Rang = 'C3' or Rang = 'C4';
+```
+```console
+Query OK, 0 rows affected (0.00 sec)
+Rows matched: 7  Changed: 0  Warnings: 0
+```
