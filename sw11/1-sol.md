@@ -224,7 +224,97 @@ Updatequery
 ```sql
 update Professoren set Rang = 'C2' where Rang = 'C3' or Rang = 'C4';
 ```
+Console output
 ```console
 Query OK, 0 rows affected (0.00 sec)
 Rows matched: 7  Changed: 0  Warnings: 0
 ```
+#### Schreiben Sie einen Trigger der prüft ob Studis Vorbedingungen erfüllen (Modul mit Note <= 3.0)
+```sql
+delimiter $$
+drop trigger if exists  checkVorbedingung;
+create trigger checkVorbedingung
+    before insert
+    on hören
+    for each row
+begin
+    declare vorgaengerId integer;
+    declare grade integer;
+    declare success boolean default true;
+    declare done boolean default false;
+    declare vorgaengerCursor cursor for select Vorgänger from voraussetzen where Nachfolger = New.VorlNr;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+
+    open vorgaengerCursor;
+
+    read_loop:
+    LOOP
+        FETCH vorgaengerCursor into vorgaengerId;
+        if done then
+            close vorgaengerCursor;
+            leave read_loop;
+        end if;
+        set grade = (select Note from prüfen where VorlNr = vorgaengerId and MatrNr = new.MatrNr);
+        if (grade is null or grade > 3.0)
+        then
+            set success = false;
+        end if;
+    end loop;
+
+    if (success)
+    then
+        set new.MatrNr = new.MatrNr;
+        set new.VorlNr = new.VorlNr;
+    end if;
+end
+$$
+
+```
+Testquery
+```sql
+insert into hören values(25403,5216);
+```
+Console output
+```console
+
+`delimiter $$
+drop trigger if exists  checkVorbedingung;
+create trigger checkVorbedingung
+    before insert
+    on hören
+    for each row
+begin
+    declare vorgaengerId integer;
+    declare grade integer;
+    declare success boolean default true;
+    declare done boolean default false;
+    declare vorgaengerCursor cursor for select Vorgänger from voraussetzen where Nachfolger = New.VorlNr;
+    DECLARE CONTINUE HANDLER FOR NOT FOUND SET done = TRUE;
+
+
+    open vorgaengerCursor;
+
+    read_loop:
+    LOOP
+        FETCH vorgaengerCursor into vorgaengerId;
+        if done then
+            close vorgaengerCursor;
+            leave read_loop;
+        end if;
+        set grade = (select Note from prüfen where VorlNr = vorgaengerId and MatrNr = new.MatrNr);
+        if (grade is null or grade > 3.0)
+        then
+            set success = false;
+        end if;
+    end loop;
+
+    if (success)
+    then
+        set new.MatrNr = new.MatrNr;
+        set new.VorlNr = new.VorlNr;
+    end if;
+end
+$$
+
+``
