@@ -317,4 +317,15 @@ begin
 end
 $$
 
-``
+```
+## Tansaction Isolation Levels
+Isolation ist die Trennung von Transaktionen auf eine Weise, dass eine laufende Transaktion nicht von einer parallel laufenden Transaktion durch Änderung der benutzten Daten in einen undefinierten Zustand gebracht werden kann.
+#### Read Uncommited
+Bei dieser Isolationsebene ignorieren Leseoperationen jegliche Sperren, deshalb können die Anomalien Lost Update, Dirty Read, Non-Repeatable Read und das Phantom-Problem auftreten. Lost Updates können aber immer noch auftreten.
+#### Read Committed
+Diese Isolationsebene setzt für die gesamte Transaktion Schreibsperren auf Objekten, die verändert werden sollen, setzt Lesesperren aber nur kurzzeitig beim tatsächlichen Lesen der Daten ein. Daher können Non-Repeatable Read und Phantom Read auftreten, wenn während wiederholten Leseoperationen auf dieselben Daten, zwischen der ersten und der zweiten Leseoperation, eine Schreiboperation einer anderen Transaktion die Daten verändert und committed.
+#### Repeatable Read
+Bei dieser Isolationsebene ist sichergestellt, dass wiederholte Leseoperationen mit den gleichen Parametern auch dieselben Ergebnisse haben. Sowohl bei Lese- als auch bei Schreiboperationen werden für die gesamte Dauer der Transaktion Sperren gesetzt. Dies führt dazu, dass bis auf Phantom Reads keine Anomalien auftreten können.
+#### Serializable
+Die höchste Isolationsebene garantiert, dass die Wirkung parallel ablaufender Transaktionen exakt dieselbe ist wie sie die entsprechenden Transaktionen zeigen würden, liefen sie nacheinander in Folge ab. Eine Transaktion kann vom Datenbanksystem aus abgebrochen werden muss. Eine Anwendung, die mit einer Datenbank arbeitet, bei der die Isolationsebene Serializable gewählt wurde, muss daher mit Serialisationsfehlern umgehen können und die entsprechende Transaktion gegebenenfalls neu beginnen.
+
