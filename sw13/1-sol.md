@@ -55,3 +55,44 @@ MATCH (n:Movie)
 WHERE (n.movie_imdbRating < '5')AND( n.movie_metascore > 55)
 RETURN n
 ```
+### Advanced Queries
+#### Advanced Queries - Exercise 1:
+Question: List all features of the movie Shrek
+```cypher
+MATCH (n:Movie{movie_name:"Shrek"})-[:linked_to]->(Feature)
+RETURN Feature.feature_name
+```
+#### Advanced Queries - Exercise 2:
+Question: Show all movies who are assoziated to the keyword "swordsman"
+```cypher
+MATCH (n:Movie)-[:has]->(Keyword{keyword_name:"swordsman"})
+RETURN n.movie_name
+```
+````console
+13 Assassins
+Kingdom of Heaven
+````
+#### Advanced Queries - Exercise 3:
+Question 1: How many users have watched the movie Titanic
+````cypher
+MATCH (n:Movie{movie_name:"Titanic"})<-[:watched]-(User)
+RETURN count(n)
+````
+````console
+320
+````
+Question 2: Find all movies who has been watched by more then 400 users (Hint: Use with)
+```cypher
+MATCH (n:Movie)-[:watched]-(User)
+WITH n, count(User) AS watchers
+WHERE watchers > 400
+RETURN (n.movie_name)
+```
+Advanced Queries - Exercise 4:
+Question 1: List all Movies who are related trough user like with the movie Agora.
+```cypher
+MATCH (user:User) --> (movie:Movie) 
+WHERE movie.movie_name = "Agora"
+RETURN (user), (movie)
+```
+Question 2: Show all related to the related.
