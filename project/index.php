@@ -4,14 +4,14 @@ error_reporting(-1);
 include("connect.php");
 
 $startScriptTime = microtime(TRUE);
-$debug = true;
 
 // Form Post Daten oder Default Werte
-$MESSWERT1_ID = isset($_POST['m1']) 	? $_POST['m1'] 		: '98721425388470291';    // Feinstaub (pm10)
-$MESSWERT2_ID = isset($_POST['m2']) 	? $_POST['m2'] 		: '98721425388470297';    // Niederschlag (Niederschlag)
-$ORT_ID = 		isset($_POST['loc']) 	? $_POST['loc'] 	: '98721425388470272';    // Bern
-$DATUM_FROM = 	isset($_POST['from']) 	? $_POST['from']	: '2017-07-25';           // well...
+$MESSWERT1_ID = isset($_POST['m1']) 	? $_POST['m1'] 		: 98721425388470291;    // Feinstaub (pm10)
+$MESSWERT2_ID = isset($_POST['m2']) 	? $_POST['m2'] 		: 98721425388470297;    // Niederschlag (Niederschlag)
+$ORT_ID = 		isset($_POST['loc']) 	? $_POST['loc'] 	: 98721425388470272;    // Bern
+$DATUM_FROM = 	isset($_POST['from']) 	? $_POST['from']	: '2017-07-25';         // well...
 $DATUM_TO = 	isset($_POST['to']) 	? $_POST['to'] 		: '2017-08-10';
+$debug = 		isset($_POST['debug']) 	? $_POST['debug'] 	: false;
 
 $numDays = round((strtotime($DATUM_TO) - strtotime($DATUM_FROM))/(60*60*24),0);
 
@@ -20,12 +20,12 @@ $sqlbase_mw = "SELECT m.datum, kuerzel, einheit, ortschaft, name, round(avg(wert
 FROM (SELECT datum, wert, ort_id, groesse_id
       FROM messung
       WHERE datum between '$DATUM_FROM' AND '$DATUM_TO'
-        and ort_id = '$ORT_ID'
-        and groesse_id = '$MESSWERT1_ID') m
+        and ort_id = $ORT_ID
+        and groesse_id = $MESSWERT1_ID) m
          join (select datum,ort_id, wert as wert2, g2.name as name2,g2.einheit as einheit2 , g2.kuerzel as kuerzel2
                from messung
                 JOIN groesse g2 ON (g2.id = groesse_id)
-               WHERE groesse_id = '$MESSWERT2_ID'
+               WHERE groesse_id = $MESSWERT2_ID
                 ) m2 on (m.datum = m2.datum and m.ort_id = m2.ort_id)
          JOIN ort o
               ON (o.id = m.ort_id)
@@ -125,9 +125,10 @@ function getMaxVal($num) {
 
 <body>
 
-<!-- Main container !-->
+<!-- Main container -->
+<br>
 <div class="container"
-     style="max-width: 1200px; <?php if ($debug) echo 'border-style: dotted; border-color: #0099cc' ?>">
+     style="max-width: 1200px; border-style: dotted; border-color: <?php echo $debug ? ('#0099cc') : ('#000') ?>">
     <div class="px-5" align="center">
 
         <div class="w-100 mx-auto px-4">
@@ -228,14 +229,18 @@ function getMaxVal($num) {
                     </div>
                 </div>
                 <div class="w-100">
+					<div class="float-right py-2 mx-3">
+                       <input type="checkbox" class="form-check-input" name="debug" value="true" <?php if($debug) echo 'checked'?>>
+						<label class="form-check-label" for="debug">debug</label>
+                    </div>
                     <div class="float-right py-2 mx-3">
                         <?php if ($debug) echo '<debug> ' . $numDays . ' Tage - ' . $rowCount . ' Rows - ' .
                             number_format(microtime(TRUE) - $startScriptTime, 4) . ' Sekunden ' ?>
                         <button type="submit" name="sendData" class="btn btn-primary">Submit</button>
                     </div>
-                </div>
+                </div>     
             </form>
-               <?php if ($debug) echo'<div class="w-100 debug-container"><br>'. '<debug> ' . $sqlbase_mw . ' <br><br>Dauer: ' . $m1Time22 . '</debug></div>'; ?>
+            <?php if ($debug) echo'<div class="w-100 debug-container"><br>'. '<debug> ' . $sqlbase_mw . ' <br><br>Dauer: ' . $m1Time22 . '</debug></div>'; ?>
         </div>
     </div>
 </div>
